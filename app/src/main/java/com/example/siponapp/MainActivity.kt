@@ -37,8 +37,9 @@ class MainActivity : ComponentActivity() {
 fun Navigator () {
 
     var currentScreen by remember {mutableStateOf("start")}
+    var playerNames by remember {mutableStateOf(listOf<String>())}
     when (currentScreen) {
-        "start" -> StartScreen(onStartClicked={currentScreen="game"})
+        "start" -> StartScreen(onStartClicked={currentScreen="setup"})
         "setup" -> Players(
             onBackClicked={currentScreen="start"},
             onPlayersConfirmed={names->
@@ -146,11 +147,11 @@ fun Players(onBackClicked:() -> Unit, onPlayersConfirmed:(List<String>) -> Unit)
 
 
 @Composable
-fun SipOnGame(onBackClicked: () -> Unit) {
+fun SipOnGame(playerNames:List<String>, onBackClicked: () -> Unit) {
     val generativeModel = remember{
         GenerativeModel(
             modelName = "gemini-3-flash-preview",
-            apiKey = "AIzaSyDkyOU4WtMex3FUCK1qqHuNJ5MP8tiAEBY"
+            apiKey = "AIzaSyDNbvmEn7ZflOFYRhA4n4n6uaoq_Mw6-hY"
         )
     }
 
@@ -191,7 +192,7 @@ fun SipOnGame(onBackClicked: () -> Unit) {
                 isLoading = true
                 scope.launch {
                     try {
-                        val response = generativeModel.generateContent("System: You are a game engine for \"SipOn\".Context: Players are: [$playersString] pick one person from this string. Current intensity: [1-10].Task: Generate ONE social challenge.Format: \"[name_person]: takes [1-5] sips if [Question]\"Difficulty Logic: If intensity < 3: Light ice-breakers. If intensity 4-7: Personal/spicy. If intensity > 8: Deep 18+ adult themes.Constraint: NO intro, NO emojis, NO bold text. Just the raw string.")
+                        val response = generativeModel.generateContent("System: You are a game engine for \"SipOn\".Context: Players are: [$playerNames] pick one person from this string. Current intensity: [1-10].Task: Generate ONE social challenge.Format: \"[name_person]: takes [1-5] sips if [Question]\"Difficulty Logic: If intensity < 3: Light ice-breakers. If intensity 4-7: Personal/spicy. If intensity > 8: Deep 18+ adult themes.Constraint: NO intro, NO emojis, NO bold text. Just the raw string.")
                         currentQuestion = response.text ?: "Try again!"
                     } catch (e: Exception) {
                         currentQuestion = "Error: ${e.localizedMessage}"
@@ -217,7 +218,7 @@ fun SipOnGame(onBackClicked: () -> Unit) {
 fun SipOnGamePreview() {
     MaterialTheme {
         Surface {
-            SipOnGame(onBackClicked = {})
+            SipOnGame(playerNames=emptyList(), onBackClicked = {})
         }
     }
 }

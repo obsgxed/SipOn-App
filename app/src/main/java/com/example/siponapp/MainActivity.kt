@@ -59,7 +59,7 @@ fun SipOnGame() {
                 .wrapContentHeight()
         )
 
-        // 3. Action Button
+
         Button(
             enabled = !isLoading,
             onClick = {

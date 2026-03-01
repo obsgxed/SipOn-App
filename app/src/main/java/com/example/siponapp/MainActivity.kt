@@ -24,10 +24,11 @@ import coil.request.ImageRequest
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 
 val ComicSans = FontFamily(
     Font(R.font.comicsans, FontWeight.Bold)
@@ -162,16 +163,32 @@ fun Players(onBackClicked:() -> Unit, onPlayersConfirmed:(List<String>) -> Unit)
     var newName by remember {mutableStateOf("")}
     val names = remember{mutableStateListOf<String>()}
 
+    Box (
+        modifier=Modifier
+            .fillMaxSize()
+            .background(Color(0xFF7A003D))
+
+    )
+
     Column (
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextButton(onClick= onBackClicked, modifier = Modifier.align(Alignment.Start)) {
-            Text("<-")
+        IconButton(
+            onClick= onBackClicked,
+            modifier = Modifier.align(Alignment.Start)
+                .size(84.dp)
+
+        ) {
+            Icon(
+                painter=painterResource(id=R.drawable.icecube),
+                contentDescription="Back Button",
+                tint=Color.Unspecified
+            )
         }
-        Text("Who is sucking my dick?", fontSize=32.sp, modifier=Modifier.padding (vertical=16.dp))
+        Text("Players", fontSize=64.sp, modifier=Modifier.padding (vertical=48.dp),fontFamily=ComicSans,color=Color(0xFFEE6D50))
         Row (
             modifier=Modifier.fillMaxWidth(),
             verticalAlignment=Alignment.CenterVertically
@@ -203,14 +220,18 @@ fun Players(onBackClicked:() -> Unit, onPlayersConfirmed:(List<String>) -> Unit)
             }
         }
 
-        Button(
+        IconButton(
             enabled = names.isNotEmpty(),
             onClick = { onPlayersConfirmed(names.toList()) },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(65.dp)
+                .height(180.dp)
         ) {
-            Text("READY STEADY GO BLYADI", fontSize = 20.sp)
+            Icon(
+                painter = painterResource(id=R.drawable.ironcan),
+                contentDescription="Confirm",
+                tint=Color.Unspecified
+            )
         }
     }
 }

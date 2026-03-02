@@ -1,34 +1,38 @@
 package com.example.siponapp
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.ai.client.generativeai.GenerativeModel
-import kotlinx.coroutines.launch
-import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
-import android.os.Build
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import com.google.ai.client.generativeai.GenerativeModel
+import kotlinx.coroutines.launch
 
 val ComicSans = FontFamily(
     Font(R.font.comicsans, FontWeight.Bold)
@@ -212,14 +216,60 @@ fun Players(onBackClicked:() -> Unit, onPlayersConfirmed:(List<String>) -> Unit)
             }
         }
 
-        LazyColumn(modifier = Modifier
-            .weight(1f)
-            .padding(vertical = 16.dp)) {
-            items(names) { name ->
-                Text("• $name", fontSize = 20.sp, modifier = Modifier.padding(4.dp))
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .padding(vertical = 16.dp)
+        ) {
+            itemsIndexed(names) {index,name ->
+                var isVisible by remember { mutableStateOf(false) }
+                LaunchedEffect(Unit) {
+                    isVisible = true
+                }
+                AnimatedVisibility(
+                    visible = isVisible,
+                    enter = fadeIn(animationSpec = tween(500)) + expandVertically(),
+                    exit = fadeOut()
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF57FF7C)
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                        Text(
+                            text = name,
+                            fontSize = 24.sp,
+                            color = Color.Black,
+                            modifier = Modifier.weight(1f),
+                            fontFamily = ComicSans
+                        )
+                        IconButton(
+                            onClick={names.removeAt(index)},
+                            modifier=Modifier.size(32.dp)
+
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.cancelcircle),
+                                contentDescription = "Remove",
+                                tint = Color(0xFFFD0A0A)
+                            )
+                        }
+                    }
+                }
             }
         }
-
+            }
         IconButton(
             enabled = names.isNotEmpty(),
             onClick = { onPlayersConfirmed(names.toList()) },
@@ -251,6 +301,12 @@ fun SipOnGame(playerNames:List<String>, onBackClicked: () -> Unit) {
     var currentQuestion by remember { mutableStateOf("Lets see who is drinking now!") }
     var isLoading by remember { mutableStateOf(false) }
 
+    Box (
+        modifier=Modifier
+            .fillMaxSize()
+            .background(Color(0xFF7A003D))
+
+    )
 
     Column(
         modifier = Modifier
@@ -259,11 +315,16 @@ fun SipOnGame(playerNames:List<String>, onBackClicked: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TextButton(
+        IconButton(
             onClick = onBackClicked,
             modifier = Modifier.align(Alignment.Start)
+                .size(84.dp)
         ) {
-            Text("← BACK TO MENU")
+            Icon (
+                painter = painterResource(id = R.drawable.backbuttonicecube),
+                contentDescription = "Back",
+                tint=Color.Unspecified
+            )
         }
 
         Text(

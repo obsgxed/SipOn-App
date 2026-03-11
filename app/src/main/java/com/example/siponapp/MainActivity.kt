@@ -33,6 +33,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.google.ai.client.generativeai.GenerativeModel
 import kotlinx.coroutines.launch
+import androidx.compose.material3.AlertDialogDefaults.containerColor
 
 val ComicSans = FontFamily(
     Font(R.font.comicsans, FontWeight.Bold)
@@ -210,7 +211,11 @@ fun Players(onBackClicked:() -> Unit, onPlayersConfirmed:(List<String>) -> Unit)
                         names.add(newName)
                         newName = ""
                     }
-                }
+                },
+                colors=ButtonDefaults.buttonColors(
+                        containerColor=Color(0xFFEE6D50),
+                        contentColor=Color.White
+                )
             ) {
                 Text("Add")
             }

@@ -16,17 +16,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextAlign
-
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateListOf
 
 
 
 
 @Composable
 fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Unit) {
-
     var newName by remember { mutableStateOf("") }
+
+    // ПРОВЕРЬ ЭТУ СТРОКУ: должно быть именно так
     val names = remember { mutableStateListOf<String>() }
-    val playerCount = names.size
 
     Box(
         modifier = Modifier
@@ -47,7 +48,7 @@ fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Uni
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.icecube),
-                    contentDescription = "Back Button",
+                    contentDescription = null,
                     tint = Color.Unspecified
                 )
             }
@@ -59,20 +60,13 @@ fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Uni
                     .fillMaxWidth()
                     .padding(vertical = 25.dp),
                 fontFamily = Inter,
-                color = Color(0xFFF0D5C0),
-                textAlign = TextAlign.Start
+                color = Color(0xFFF0D5C0)
             )
 
             TextField(
                 value = newName,
                 onValueChange = { newName = it },
-                placeholder = {
-                    Text(
-                        "Enter player name...",
-                        color = Color(0xFFAA707A),
-                        fontFamily = Inter,
-                    )
-                },
+                placeholder = { Text("Enter player name...", color = Color(0xFFAA707A), fontFamily = Inter) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -82,7 +76,6 @@ fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Uni
                     unfocusedContainerColor = Color(0xFFEED7C5),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
                     cursorColor = Color(0xFFEE6D50)
                 ),
                 trailingIcon = {
@@ -97,10 +90,7 @@ fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Uni
                             .height(46.dp)
                             .padding(end = 12.dp),
                         shape = RoundedCornerShape(15.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFEE6D50),
-                            contentColor = Color.White
-                        )
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEE6D50))
                     ) {
                         Text("Add", fontFamily = Inter)
                     }
@@ -108,60 +98,11 @@ fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Uni
                 singleLine = true
             )
 
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 16.dp)
-            ) {
-                itemsIndexed(names) { index, name ->
-                    var isVisible by remember { mutableStateOf(false) }
-                    LaunchedEffect(Unit) { isVisible = true }
-
-                    AnimatedVisibility(
-                        visible = isVisible,
-                        enter = fadeIn(animationSpec = tween(500)) + expandVertically(),
-                        exit = fadeOut()
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFEE6D50))
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = name,
-                                    fontSize = 20.sp,
-                                    color = Color.White,
-                                    modifier = Modifier.weight(3f),
-                                    fontFamily = Inter
-                                )
-                                IconButton(
-                                    onClick = { names.removeAt(index) },
-                                    modifier = Modifier.size(24.dp)
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.bin),
-                                        contentDescription = "Remove",
-                                        tint = Color.White
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            Spacer(modifier = Modifier.height(12.dp))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.people),
@@ -171,11 +112,47 @@ fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Uni
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "$playerCount PLAYERS IN PARTY",
+                    text = "${names.size} PLAYERS IN PARTY",
                     color = Color(0xFFBA969B),
                     fontFamily = Inter,
                     fontSize = 14.sp,
                 )
+            }
+                Spacer(modifier = Modifier.width(8.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                itemsIndexed(names) { index, name ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFEE6D50))
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = name, color = Color.White, fontFamily = Inter, fontSize=24.sp)
+                            IconButton(
+                                onClick = { names.removeAt(index) },
+                                modifier = Modifier.size(28.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.bin),
+                                    contentDescription = null,
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             IconButton(
@@ -187,11 +164,10 @@ fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Uni
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ironcan2),
-                    contentDescription = "Confirm",
+                    contentDescription = null,
                     tint = Color.Unspecified
                 )
             }
         }
     }
 }
-

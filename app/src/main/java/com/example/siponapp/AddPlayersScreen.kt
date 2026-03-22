@@ -25,9 +25,8 @@ import androidx.compose.runtime.mutableStateListOf
 @Composable
 fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Unit) {
     var newName by remember { mutableStateOf("") }
-
-    // ПРОВЕРЬ ЭТУ СТРОКУ: должно быть именно так
     val names = remember { mutableStateListOf<String>() }
+    val playerCount = names.size
 
     Box(
         modifier = Modifier
@@ -112,13 +111,13 @@ fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Uni
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "${names.size} PLAYERS IN PARTY",
+                    text = "$playerCount PLAYERS IN PARTY",
                     color = Color(0xFFBA969B),
                     fontFamily = Inter,
                     fontSize = 14.sp,
                 )
             }
-                Spacer(modifier = Modifier.width(8.dp))
+
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
@@ -126,29 +125,45 @@ fun Players(onBackClicked: () -> Unit, onPlayersConfirmed: (List<String>) -> Uni
                     .padding(vertical = 8.dp)
             ) {
                 itemsIndexed(names) { index, name ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFEE6D50))
+                    var isVisible by remember (name) { mutableStateOf(false) }
+                    LaunchedEffect(name) { isVisible = true }
+
+                    AnimatedVisibility(
+                        visible = isVisible,
+                        enter = fadeIn(animationSpec = tween(500)) + expandVertically(),
+                        exit = fadeOut()
                     ) {
-                        Row(
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFEE6D50))
                         ) {
-                            Text(text = name, color = Color.White, fontFamily = Inter, fontSize=24.sp)
-                            IconButton(
-                                onClick = { names.removeAt(index) },
-                                modifier = Modifier.size(28.dp)
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.bin),
-                                    contentDescription = null,
-                                    tint = Color.White
+                                Text(
+                                    text = name,
+                                    color = Color.White,
+                                    fontFamily = Inter,
+                                    fontSize = 24.sp,
+                                    modifier = Modifier.weight(1f)
                                 )
+                                IconButton(
+                                    onClick = { names.removeAt(index) },
+                                    modifier = Modifier.size(28.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.bin),
+                                        contentDescription = null,
+                                        tint = Color.White
+                                    )
+                                }
                             }
                         }
                     }

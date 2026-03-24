@@ -11,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun SipOnStart(onStartClicked: () -> Unit, onBackClicked: () -> Unit) {
@@ -46,12 +47,36 @@ fun SipOnStart(onStartClicked: () -> Unit, onBackClicked: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        Card (
-            modifier=Modifier.fillMaxWidth(),
-
-        )
-
-
+    Card (
+        modifier=Modifier.fillMaxWidth().padding(16.dp),
+        colors=CardDefaults.cardColors(containerColor=Color(0xFF8A0045)),
+        shape=RoundedCornerShape(16.dp)
+    ) {
+         Row(
+             modifier = Modifier.padding(16.dp),
+             verticalAlignment=Alignment.Top
+         ) {
+             Box(
+                 modifier=Modifier
+                    .size(48.dp)
+                    .background(Color(0xFFEE6D50), shape=RoundedCornerShape(50)),
+                contentAlignment=Alignment.Center
+             ) {
+                 Icon(
+                     painter=painterResource(id=R.drawable.people),
+                     contentDescription=null,
+                     tint=Color.Unspecified,
+                     modifier=Modifier.size(24.dp)
+                 )
+             }
+            Spacer(modifier=Modifier.width(16.dp))
+            Column {
+                Text("How to play?",color=Color.White,fontSize=16.sp)
+                Spacer(modifier=Modifier.height(4.dp))
+                Text("Add all players", color=Color.White, fontSize=16.sp)
+         }
+    }
+}
         Text(
             text = "• Someone gets picked\n• They answer or sip\n• Have fun!",
             fontSize = 18.sp,

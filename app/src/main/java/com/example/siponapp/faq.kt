@@ -78,7 +78,7 @@ fun SipOnStart(onStartClicked: () -> Unit, onBackClicked: () -> Unit) {
     }
 }
         Text(
-            text = "• Someone gets picked\n• They answer or sip\n• Have fun!",
+            text = "Have fun!",
             fontSize = 18.sp,
             color = Color.White,
             textAlign = TextAlign.Center,
@@ -89,7 +89,7 @@ fun SipOnStart(onStartClicked: () -> Unit, onBackClicked: () -> Unit) {
             onClick = onStartClicked,
             modifier = Modifier.fillMaxWidth().height(65.dp)
         ) {
-            Text("Let's go!", fontSize = 18.sp)
+            Text("L", fontSize = 18.sp)
         }
     }
 }

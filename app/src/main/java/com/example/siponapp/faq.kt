@@ -71,7 +71,7 @@ fun SipOnStart(onStartClicked: () -> Unit, onBackClicked: () -> Unit) {
              }
             Spacer(modifier=Modifier.width(16.dp))
             Column {
-                Text("How to play?",color=Color.White,fontSize=16.sp)
+                Text("How to ?",color=Color.White,fontSize=16.sp)
                 Spacer(modifier=Modifier.height(4.dp))
                 Text("Add all players", color=Color.White, fontSize=16.sp)
          }
